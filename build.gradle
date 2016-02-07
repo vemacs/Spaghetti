@@ -21,10 +21,14 @@ dependencies {
 
 buildscript {
     repositories { jcenter() }
-    dependencies { classpath 'org.ajoberstar:grgit:1.1.0' }
+    dependencies { classpath 'org.ajoberstar:grgit:1.4.1' }
 }
-ext { git = org.ajoberstar.grgit.Grgit.open(file('.')) }
-version = "0.1-${git.head().abbreviatedId}"
+ext { 
+	git = org.ajoberstar.grgit.Grgit.open(file('.')) 
+}
+
+version = "0.1"
+def revision = "${git.branch.getCurrent().getName()}-${git.head().abbreviatedId}"
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.10'
@@ -32,6 +36,7 @@ task wrapper(type: Wrapper) {
 
 processResources {
     filter ReplaceTokens, tokens: [
-        "version": project.property("version").toString()
+        "version": project.property("version").toString(),
+        "revision": revision.toString()
     ]
 }
