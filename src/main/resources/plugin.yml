@@ -1,0 +1,3 @@
+main: es.nkmem.da.spaghetti.SpaghettiPlugin
+name: Spaghetti
+version: @version@

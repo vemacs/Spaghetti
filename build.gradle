@@ -1,0 +1,36 @@
+import org.apache.tools.ant.filters.*
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+}
+
+dependencies {
+    compile "org.projectlombok:lombok:1.16.6"
+    compile 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
+    compile fileTree('lib')
+}
+
+buildscript {
+    repositories { jcenter() }
+    dependencies { classpath 'org.ajoberstar:grgit:1.1.0' }
+}
+ext { git = org.ajoberstar.grgit.Grgit.open(file('.')) }
+version = "0.1-${git.head().abbreviatedId}"
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.10'
+}
+
+processResources {
+    filter ReplaceTokens, tokens: [
+        "version": project.property("version")
+    ]
+}
