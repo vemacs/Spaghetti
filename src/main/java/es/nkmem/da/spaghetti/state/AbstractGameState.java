@@ -6,6 +6,7 @@ import es.nkmem.da.spaghetti.registries.StateCommandRegistry;
 import es.nkmem.da.spaghetti.registries.StateListenerRegistry;
 import es.nkmem.da.spaghetti.registries.StateScheduler;
 import lombok.Getter;
+import lombok.NonNull;
 import org.bukkit.configuration.MemoryConfiguration;
 
 @Getter
@@ -17,7 +18,7 @@ public abstract class AbstractGameState {
     private StateListenerRegistry listenerRegistry;
     private StateScheduler scheduler;
 
-    protected AbstractGameState(SpaghettiPlugin parent) {
+    protected AbstractGameState(@NonNull SpaghettiPlugin parent) {
         this.parent = parent;
         dummy = new DummyPlugin(parent, getClass().getSimpleName());
         commandRegistry = new StateCommandRegistry(parent, dummy);
@@ -26,6 +27,13 @@ public abstract class AbstractGameState {
     }
 
     public abstract void initialize(MemoryConfiguration data);
+
+    /**
+     * This method should be used for cleanup operations (e.g. on server shutdown)
+     * It can be left empty
+     */
+    public void cleanup() {
+    }
 
     public final void stop(AbstractGameState next, Transition stateTransition) {
         stop(next, stateTransition, new MemoryConfiguration());
