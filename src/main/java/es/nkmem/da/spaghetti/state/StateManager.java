@@ -1,10 +1,8 @@
 package es.nkmem.da.spaghetti.state;
 
 import es.nkmem.da.spaghetti.SpaghettiPlugin;
-import lombok.Data;
 import org.bukkit.configuration.MemoryConfiguration;
 
-@Data
 public class StateManager {
     private SpaghettiPlugin spaghetti;
     private AbstractGameState currentState;
@@ -26,6 +24,9 @@ public class StateManager {
         currentState.getListenerRegistry().shutdown();
         currentState.getScheduler().shutdown();
         currentState.cleanup();
+
+        spaghetti.getLogger().info("Switching from " + currentState.getClass().getSimpleName() + " to " +
+            state.getClass().getSimpleName() + ", with" + transition.toString());
         currentState = null; // Release references
 
         // handle transition

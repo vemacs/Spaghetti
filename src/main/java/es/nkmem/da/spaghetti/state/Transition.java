@@ -1,10 +1,10 @@
 package es.nkmem.da.spaghetti.state;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
 @Builder
-@Getter
+@Data
 public class Transition {
     private boolean resetPlayers = false;
     private String loadWorld = null;
