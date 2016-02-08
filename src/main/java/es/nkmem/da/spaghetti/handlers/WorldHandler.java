@@ -5,12 +5,11 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -32,6 +31,14 @@ public class WorldHandler {
 
     public World getGameWorld() {
         return Bukkit.getWorld(gameWorldName);
+    }
+
+    public FileConfiguration loadWorldConfig() throws FileNotFoundException {
+        File configFile = new File(gameWorldFile, "config.yml");
+        if (!configFile.exists()) {
+            throw new FileNotFoundException("World configuration not found");
+        }
+        return YamlConfiguration.loadConfiguration(new File(gameWorldFile, "config.yml"));
     }
 
     /*
