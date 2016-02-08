@@ -55,11 +55,12 @@ public class WorldHandler {
 
     @SuppressWarnings("all")
     private static void purgeDirectory(File dir) {
-        if (dir != null) {
+        if (dir != null && dir.exists()) {
             for (File file : dir.listFiles()) {
                 if (file.isDirectory()) purgeDirectory(file);
                 file.delete();
             }
+            dir.delete();
         }
     }
 
@@ -67,7 +68,7 @@ public class WorldHandler {
         worldName = mapName;
         SpaghettiPlugin spaghetti = SpaghettiPlugin.getInstance();
         File dataFolder = spaghetti.getMapsDirectory();
-        File mapFile = new File(dataFolder, spaghetti.getGameWorldName());
+        File mapFile = new File(spaghetti.getGameWorldName());
         try {
             try {
                 purgeDirectory(mapFile);
@@ -76,7 +77,7 @@ public class WorldHandler {
 
             }
             WorldHandler.copyFile(new File(dataFolder, mapName), mapFile);
-            WorldCreator wc = new WorldCreator(mapFile.getPath());
+            WorldCreator wc = new WorldCreator(spaghetti.getGameWorldName());
             wc.environment(environment);
             return Bukkit.createWorld(wc);
         } catch (IOException e) {
@@ -86,7 +87,7 @@ public class WorldHandler {
     }
 
     public static void clearMapsDir() {
-        File mapsFolder = SpaghettiPlugin.getInstance().getMapsDirectory();
+        File mapsFolder = new File(SpaghettiPlugin.getInstance().getGameWorldName());
         purgeDirectory(mapsFolder);
     }
 
@@ -113,6 +114,8 @@ public class WorldHandler {
                         }
                     }
                 }.runTaskLaterAsynchronously(spaghetti, 2L);
+            } else {
+                spaghetti.getLogger().info("Catastrophic failure in unloading!");
             }
         }
     }

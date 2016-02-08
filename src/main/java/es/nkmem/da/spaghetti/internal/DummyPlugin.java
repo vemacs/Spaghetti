@@ -54,7 +54,7 @@ public class DummyPlugin implements Plugin {
 
     @Override
     public PluginLoader getPluginLoader() {
-        throw new UnsupportedOperationException();
+        return this.parent.getPluginLoader();
     }
 
     @Override

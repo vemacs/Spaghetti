@@ -1,16 +1,17 @@
 package es.nkmem.da.spaghetti.state;
 
+import es.nkmem.da.spaghetti.data.WrappedLocation;
 import lombok.Builder;
 import lombok.Data;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-@Builder
 @Data
+@Builder
 public class Transition {
-    private boolean resetPlayers = false;
-    private Location teleportTo = null;
+    private Boolean resetPlayers;
+    private WrappedLocation teleportTo = null;
     private World unloadWorld = null;
     private String loadWorld = null;
-    private World.Environment loadEnvironment = World.Environment.NORMAL;
+    private World.Environment loadEnvironment;
 }

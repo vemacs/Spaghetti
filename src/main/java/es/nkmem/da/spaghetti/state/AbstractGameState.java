@@ -7,6 +7,7 @@ import es.nkmem.da.spaghetti.registries.StateListenerRegistry;
 import es.nkmem.da.spaghetti.registries.StateScheduler;
 import lombok.Getter;
 import lombok.NonNull;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemoryConfiguration;
 
 @Getter
@@ -40,6 +41,6 @@ public abstract class AbstractGameState {
     }
 
     public final void stop(AbstractGameState next, Transition stateTransition, MemoryConfiguration data) {
-        parent.getStateManager().nextState(next, stateTransition, data);
+        Bukkit.getScheduler().runTask(parent, () -> parent.getStateManager().nextState(next, stateTransition, data));
     }
 }

@@ -1,9 +1,12 @@
 package es.nkmem.da.spaghetti.state;
 
 import es.nkmem.da.spaghetti.SpaghettiPlugin;
+import es.nkmem.da.spaghetti.data.WrappedLocation;
 import es.nkmem.da.spaghetti.handlers.PlayerResetHandler;
 import es.nkmem.da.spaghetti.handlers.WorldHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 
@@ -34,26 +37,34 @@ public class StateManager {
         currentState = null; // Release references
 
         // handle transition
-        // TODO: implement handlers
-        if (transition.isResetPlayers()) {
+        if (transition.getResetPlayers() == null) {
+            transition.setResetPlayers(false);
+        }
+        if (transition.getLoadEnvironment() == null) {
+            transition.setLoadEnvironment(World.Environment.NORMAL);
+        }
+
+        boolean hasTeleported = false;
+        if (transition.getResetPlayers()) {
             Bukkit.getOnlinePlayers().forEach(PlayerResetHandler::resetPlayer);
         }
         if (transition.getUnloadWorld() != null) {
-            if (transition.getTeleportTo() == null
-                    || transition.getTeleportTo().getWorld().equals(transition.getUnloadWorld())) {
+            WrappedLocation teleportTo = transition.getTeleportTo();
+            if (teleportTo == null
+                    || teleportTo.getBukkitLocation().getWorld().equals(transition.getUnloadWorld())) {
                 spaghetti.getLogger().severe("Teleport destination world not defined correctly, reverting to null");
                 state = new NullGameState(spaghetti);
             } else {
+                teleportPlayers(transition);
+                hasTeleported = true;
                 WorldHandler.attemptWorldUnload(transition.getUnloadWorld());
-            }
-        }
-        if (transition.getTeleportTo() != null) {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                p.teleport(transition.getTeleportTo());
             }
         }
         if (transition.getLoadWorld() != null) {
             WorldHandler.loadMap(transition.getLoadWorld(), transition.getLoadEnvironment());
+        }
+        if (!hasTeleported) {
+            teleportPlayers(transition);
         }
 
         // initialize new state
@@ -63,5 +74,13 @@ public class StateManager {
         }
         currentState = state;
         state.initialize(data);
+    }
+
+    private void teleportPlayers(Transition transition) {
+        if (transition.getTeleportTo() != null) {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                p.teleport(transition.getTeleportTo().getBukkitLocation());
+            }
+        }
     }
 }
