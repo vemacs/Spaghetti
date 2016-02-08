@@ -1,7 +1,10 @@
 package es.nkmem.da.spaghetti.state;
 
 import es.nkmem.da.spaghetti.SpaghettiPlugin;
+import es.nkmem.da.spaghetti.handlers.PlayerResetHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemoryConfiguration;
+import org.bukkit.entity.Player;
 
 public class StateManager {
     private SpaghettiPlugin spaghetti;
@@ -32,7 +35,9 @@ public class StateManager {
         // handle transition
         // TODO: implement handlers
         if (transition.isResetPlayers()) {
-
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                PlayerResetHandler.resetPlayer(p);
+            }
         }
         if (transition.getUnloadWorld() != null) {
 
