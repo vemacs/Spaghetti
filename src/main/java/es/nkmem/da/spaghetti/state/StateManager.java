@@ -2,6 +2,7 @@ package es.nkmem.da.spaghetti.state;
 
 import es.nkmem.da.spaghetti.SpaghettiPlugin;
 import es.nkmem.da.spaghetti.handlers.PlayerResetHandler;
+import es.nkmem.da.spaghetti.handlers.WorldHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
@@ -40,10 +41,16 @@ public class StateManager {
             }
         }
         if (transition.getUnloadWorld() != null) {
-
+            if (transition.getTeleportTo() == null
+                    || transition.getTeleportTo().getWorld().equals(transition.getUnloadWorld())) {
+                spaghetti.getLogger().severe("Teleport destination world not defined correctly, reverting to null");
+                state = new NullGameState(spaghetti);
+            } else {
+                WorldHandler.attemptWorldUnload(transition.getUnloadWorld());
+            }
         }
         if (transition.getLoadWorld() != null) {
-
+            WorldHandler.loadMap(transition.getLoadWorld());
         }
 
         // initialize new state

@@ -1,1 +1,2 @@
-maps-directory: ./sp-maps
+maps-directory: ./sp-maps/
+game-world-name: gameworld

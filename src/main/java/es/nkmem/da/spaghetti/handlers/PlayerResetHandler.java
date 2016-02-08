@@ -9,6 +9,10 @@ public class PlayerResetHandler {
     private static boolean errorShown = false;
 
     public static void resetPlayer(Player p) {
+        if (p.isInsideVehicle()) {
+            p.getVehicle().eject();
+        }
+
         p.setHealth(20.0D);
         p.setFoodLevel(20);
         p.setLevel(0);

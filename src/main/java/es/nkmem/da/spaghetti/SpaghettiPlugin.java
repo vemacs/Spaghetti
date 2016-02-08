@@ -7,10 +7,17 @@ import lombok.Getter;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-@Getter
+import java.io.File;
+
 public class SpaghettiPlugin extends JavaPlugin {
+    @Getter
     private static SpaghettiPlugin instance;
+    @Getter
     private StateManager stateManager;
+    @Getter
+    private File mapsDirectory;
+    @Getter
+    private String gameWorldName;
 
     @Override
     public void onEnable() {
@@ -19,6 +26,8 @@ public class SpaghettiPlugin extends JavaPlugin {
 
         stateManager = new StateManager(this);
         getLogger().info("Initialized StateManager");
+        mapsDirectory = new File(getConfig().getString("maps-directory"));
+        gameWorldName = getConfig().getString("game-world-name");
     }
 
     @Override
