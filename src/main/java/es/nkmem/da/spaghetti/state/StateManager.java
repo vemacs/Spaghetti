@@ -36,13 +36,6 @@ public class StateManager {
         currentState = null; // Release references
 
         // handle transition
-        if (transition.getResetPlayers() == null) {
-            transition.setResetPlayers(false);
-        }
-        if (transition.getLoadEnvironment() == null) {
-            transition.setLoadEnvironment(World.Environment.NORMAL);
-        }
-
         WorldHandler worldHandler = spaghetti.getWorldHandler();
         boolean hasTeleported = false;
         if (transition.getResetPlayers()) {

@@ -9,8 +9,25 @@ import org.bukkit.World;
 @Builder
 public class Transition {
     private Boolean resetPlayers;
-    private WrappedLocation teleportTo = null;
-    private World unloadWorld = null;
-    private String loadWorld = null;
+    private WrappedLocation teleportTo;
+    private World unloadWorld;
+    private String loadWorld;
     private World.Environment loadEnvironment;
+
+    Transition(Boolean resetPlayers, WrappedLocation teleportTo,
+               World unloadWorld, String loadWorld, World.Environment loadEnvironment) {
+        if (resetPlayers == null) {
+            this.resetPlayers = false;
+        } else {
+            this.resetPlayers = resetPlayers;
+        }
+        this.teleportTo = teleportTo;
+        this.unloadWorld = unloadWorld;
+        this.loadWorld = loadWorld;
+        if (loadEnvironment == null) {
+            this.loadEnvironment = World.Environment.NORMAL;
+        } else {
+            this.loadEnvironment = loadEnvironment;
+        }
+    }
 }
