@@ -44,10 +44,12 @@ public class StateManager {
                 spaghetti.getLogger().severe("Teleport destination world not defined correctly, reverting to null");
                 state = new NullGameState(spaghetti);
             } else {
-                for (Player p : transition.getUnloadWorld().getPlayers()) {
-                    p.teleport(transition.getTeleportTo());
-                }
                 WorldHandler.attemptWorldUnload(transition.getUnloadWorld());
+            }
+        }
+        if (transition.getTeleportTo() != null) {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                p.teleport(transition.getTeleportTo());
             }
         }
         if (transition.getLoadWorld() != null) {
