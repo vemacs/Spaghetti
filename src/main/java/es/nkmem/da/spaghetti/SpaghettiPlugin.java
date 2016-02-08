@@ -1,5 +1,6 @@
 package es.nkmem.da.spaghetti;
 
+import es.nkmem.da.spaghetti.handlers.WorldHandler;
 import es.nkmem.da.spaghetti.state.NullGameState;
 import es.nkmem.da.spaghetti.state.StateManager;
 import es.nkmem.da.spaghetti.state.Transition;
@@ -26,8 +27,11 @@ public class SpaghettiPlugin extends JavaPlugin {
 
         stateManager = new StateManager(this);
         getLogger().info("Initialized StateManager");
+
         mapsDirectory = new File(getConfig().getString("maps-directory"));
         gameWorldName = getConfig().getString("game-world-name");
+        WorldHandler.clearMapsDir();
+        getLogger().info("Initialized World Handler and cleared maps directory");
     }
 
     @Override

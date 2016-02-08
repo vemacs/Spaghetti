@@ -9,7 +9,8 @@ import org.bukkit.World;
 @Data
 public class Transition {
     private boolean resetPlayers = false;
-    private String loadWorld = null;
     private Location teleportTo = null;
     private World unloadWorld = null;
+    private String loadWorld = null;
+    private World.Environment loadEnvironment = World.Environment.NORMAL;
 }

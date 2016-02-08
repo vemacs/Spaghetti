@@ -61,7 +61,7 @@ public class WorldHandler {
         }
     }
 
-    public static World loadMap(String mapName) {
+    public static World loadMap(String mapName, World.Environment environment) {
         worldName = mapName;
         SpaghettiPlugin spaghetti = SpaghettiPlugin.getInstance();
         File dataFolder = spaghetti.getMapsDirectory();
@@ -74,8 +74,9 @@ public class WorldHandler {
 
             }
             WorldHandler.copyFile(new File(dataFolder, mapName), mapFile);
-            Bukkit.createWorld(new WorldCreator(mapFile.getPath()));
-            return Bukkit.getWorld(mapFile.getPath());
+            WorldCreator wc = new WorldCreator(mapFile.getPath());
+            wc.environment(environment);
+            return Bukkit.createWorld(wc);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -88,6 +89,7 @@ public class WorldHandler {
     }
 
     public static void attemptWorldUnload(final World gameWorld) {
+        final SpaghettiPlugin spaghetti = SpaghettiPlugin.getInstance();
         if (gameWorld != null) {
             if (Bukkit.unloadWorld(gameWorld, false)) {
                 new BukkitRunnable() {
@@ -102,13 +104,13 @@ public class WorldHandler {
                             worldFolder.delete();
                             worldName = null;
                         } catch (Exception e) {
-                            if (tries < 2) {
+                            if (tries < 3) {
                                 tries++;
-                                this.runTaskLaterAsynchronously(SpaghettiPlugin.getInstance(), (tries + 1) * 20L);
+                                this.runTaskLaterAsynchronously(spaghetti, (tries + 1) * 20L);
                             }
                         }
                     }
-                }.runTaskLaterAsynchronously(SpaghettiPlugin.getInstance(), 5L);
+                }.runTaskLaterAsynchronously(spaghetti, 2L);
             }
         }
     }
