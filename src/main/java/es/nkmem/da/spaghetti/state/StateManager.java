@@ -5,7 +5,6 @@ import es.nkmem.da.spaghetti.data.WrappedLocation;
 import es.nkmem.da.spaghetti.handlers.PlayerResetHandler;
 import es.nkmem.da.spaghetti.handlers.WorldHandler;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;

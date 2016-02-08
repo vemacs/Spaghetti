@@ -32,7 +32,7 @@ public class PlayerResetHandler {
         p.getInventory().setBoots(null);
 
         try {
-           // NMSHandler.resetDataWatchers(p);
+            NMSHandler.removeArrows(p);
         } catch (Throwable t) {
             if (!errorShown) {
                 errorShown = true;

@@ -3,7 +3,6 @@ package es.nkmem.da.spaghetti.state;
 import es.nkmem.da.spaghetti.data.WrappedLocation;
 import lombok.Builder;
 import lombok.Data;
-import org.bukkit.Location;
 import org.bukkit.World;
 
 @Data

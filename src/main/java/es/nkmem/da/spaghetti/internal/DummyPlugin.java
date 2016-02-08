@@ -1,10 +1,6 @@
 package es.nkmem.da.spaghetti.internal;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.List;
-import java.util.logging.Logger;
-
+import com.avaje.ebean.EbeanServer;
 import lombok.AllArgsConstructor;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
@@ -15,7 +11,10 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
 
-import com.avaje.ebean.EbeanServer;
+import java.io.File;
+import java.io.InputStream;
+import java.util.List;
+import java.util.logging.Logger;
 
 @AllArgsConstructor
 public class DummyPlugin implements Plugin {

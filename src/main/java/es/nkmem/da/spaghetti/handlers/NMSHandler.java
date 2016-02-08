@@ -1,11 +1,9 @@
 package es.nkmem.da.spaghetti.handlers;
 
-import com.google.common.collect.ImmutableMap;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Method;
-import java.util.Map;
 
 public class NMSHandler {
     private static String ver;
@@ -17,33 +15,34 @@ public class NMSHandler {
     }
 
     private static Method getHandleCraftPlayer;
-    private static Method resetDataWatcher;
-    private static Map<String, String> resetMethod = ImmutableMap.<String, String>builder()
-            .put("v1_7_", "c")
-            .put("v1_8_", "h")
-            .build();
+    private static Method getDataWatcher;
+    private static Method watch;
 
-    public static void resetDataWatchers(Player p) throws Throwable {
+    public static void setDataWatcher(Player p, int key, byte value) throws Throwable {
         if (getHandleCraftPlayer == null) {
             getHandleCraftPlayer = p.getClass().getDeclaredMethod("getHandle");
             getHandleCraftPlayer.setAccessible(true);
         }
         Object entityPlayer = getHandleCraftPlayer.invoke(p);
-        if (resetDataWatcher == null) {
-            String methodName = null;
-            for (Map.Entry<String, String> entry : resetMethod.entrySet()) {
-                if (ver.startsWith(entry.getKey())) {
-                    methodName = entry.getValue();
+        if (getDataWatcher == null) {
+            Class<?> nmsEntity = Class.forName("net.minecraft.server." + ver + ".Entity");
+            getDataWatcher = nmsEntity.getDeclaredMethod("GetDataWatcher");
+            getDataWatcher.setAccessible(true);
+        }
+        Object dataWatcher = getDataWatcher.invoke(entityPlayer);
+        if (watch == null) {
+            for (Method m : dataWatcher.getClass().getDeclaredMethods()) {
+                if (m.getName().equals("watch")) {
+                    watch = m;
+                    watch.setAccessible(true);
+                    break;
                 }
             }
-            if (methodName == null) {
-                throw new RuntimeException("Undefined field name for player reset");
-            }
-            resetDataWatcher = entityPlayer.getClass() // EntityPlayer
-                    .getSuperclass() // EntityHuman
-                    .getDeclaredMethod(methodName);
-            resetDataWatcher.setAccessible(true);
         }
-        resetDataWatcher.invoke(entityPlayer);
+        watch.invoke(dataWatcher, key, value);
+    }
+
+    public static void removeArrows(Player p) throws Throwable {
+        setDataWatcher(p, 9, (byte) 0);
     }
 }

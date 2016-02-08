@@ -5,12 +5,8 @@ import es.nkmem.da.spaghetti.state.NullGameState;
 import es.nkmem.da.spaghetti.state.StateManager;
 import es.nkmem.da.spaghetti.state.Transition;
 import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.File;
 
 public class SpaghettiPlugin extends JavaPlugin {
     @Getter

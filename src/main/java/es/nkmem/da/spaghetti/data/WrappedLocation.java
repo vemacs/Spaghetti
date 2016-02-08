@@ -1,6 +1,8 @@
 package es.nkmem.da.spaghetti.data;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
