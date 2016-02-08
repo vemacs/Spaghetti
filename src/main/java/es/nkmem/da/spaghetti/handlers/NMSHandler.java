@@ -26,7 +26,7 @@ public class NMSHandler {
         Object entityPlayer = getHandleCraftPlayer.invoke(p);
         if (getDataWatcher == null) {
             Class<?> nmsEntity = Class.forName("net.minecraft.server." + ver + ".Entity");
-            getDataWatcher = nmsEntity.getDeclaredMethod("GetDataWatcher");
+            getDataWatcher = nmsEntity.getDeclaredMethod("getDataWatcher");
             getDataWatcher.setAccessible(true);
         }
         Object dataWatcher = getDataWatcher.invoke(entityPlayer);
