@@ -1,6 +1,7 @@
 package es.nkmem.da.spaghetti.handlers;
 
 import es.nkmem.da.spaghetti.SpaghettiPlugin;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -14,9 +15,78 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
+@Getter
 public class WorldHandler {
-    public static String worldName;
+    private File mapsDirectory;
+    private File gameWorldFile;
+    private String gameWorldName;
 
+    private SpaghettiPlugin spaghetti;
+
+    public WorldHandler(SpaghettiPlugin spaghetti, String mapsDirectory, String gameWorldName) {
+        this.spaghetti = spaghetti;
+        this.mapsDirectory = new File(mapsDirectory);
+        this.gameWorldFile = new File(gameWorldName);
+        this.gameWorldName = gameWorldName;
+    }
+
+    public World getGameWorld() {
+        return Bukkit.getWorld(gameWorldName);
+    }
+
+    /*
+    Map loading/unloading functionality
+     */
+    public World loadMap(String mapName, World.Environment environment) {
+        try {
+            try {
+                clearGameWorld();
+            } catch (Throwable ignored) {
+            }
+            WorldHandler.copyFile(new File(mapsDirectory, mapName), gameWorldFile);
+            WorldCreator wc = new WorldCreator(gameWorldName);
+            wc.environment(environment);
+            return Bukkit.createWorld(wc);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void clearGameWorld() {
+        purgeDirectory(gameWorldFile);
+    }
+
+    public void attemptWorldUnload(final World world) {
+        if (world != null) {
+            if (Bukkit.unloadWorld(world, false)) {
+                new BukkitRunnable() {
+                    private int tries = 0;
+
+                    @Override
+                    public void run() {
+                        try {
+                            spaghetti.getLogger().info("Attempting world unload for " + world.getName());
+                            File worldFolder = world.getWorldFolder();
+                            purgeDirectory(worldFolder);
+                            worldFolder.delete();
+                        } catch (Exception e) {
+                            if (tries < 3) {
+                                tries++;
+                                this.runTaskLaterAsynchronously(spaghetti, (tries + 1) * 20L);
+                            }
+                        }
+                    }
+                }.runTaskLaterAsynchronously(spaghetti, 2L);
+            } else {
+                spaghetti.getLogger().info("Catastrophic failure in unloading!");
+            }
+        }
+    }
+
+    /*
+    File Utilities, probably some wheel reinvention going on here
+     */
     private static void copyFile(File source, File target) throws IOException {
         ArrayList<String> ignore = new ArrayList<>(Arrays.asList(new String[]{"uid.dat", "session.dat"}));
 
@@ -61,62 +131,6 @@ public class WorldHandler {
                 file.delete();
             }
             dir.delete();
-        }
-    }
-
-    public static World loadMap(String mapName, World.Environment environment) {
-        worldName = mapName;
-        SpaghettiPlugin spaghetti = SpaghettiPlugin.getInstance();
-        File dataFolder = spaghetti.getMapsDirectory();
-        File mapFile = new File(spaghetti.getGameWorldName());
-        try {
-            try {
-                purgeDirectory(mapFile);
-                mapFile.delete();
-            } catch (Throwable ignored) {
-
-            }
-            WorldHandler.copyFile(new File(dataFolder, mapName), mapFile);
-            WorldCreator wc = new WorldCreator(spaghetti.getGameWorldName());
-            wc.environment(environment);
-            return Bukkit.createWorld(wc);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static void clearMapsDir() {
-        File mapsFolder = new File(SpaghettiPlugin.getInstance().getGameWorldName());
-        purgeDirectory(mapsFolder);
-    }
-
-    public static void attemptWorldUnload(final World gameWorld) {
-        final SpaghettiPlugin spaghetti = SpaghettiPlugin.getInstance();
-        if (gameWorld != null) {
-            if (Bukkit.unloadWorld(gameWorld, false)) {
-                new BukkitRunnable() {
-                    private int tries = 0;
-
-                    @Override
-                    public void run() {
-                        try {
-                            SpaghettiPlugin.getInstance().getLogger().info("Attempting world unload for " + worldName);
-                            File worldFolder = gameWorld.getWorldFolder();
-                            purgeDirectory(worldFolder);
-                            worldFolder.delete();
-                            worldName = null;
-                        } catch (Exception e) {
-                            if (tries < 3) {
-                                tries++;
-                                this.runTaskLaterAsynchronously(spaghetti, (tries + 1) * 20L);
-                            }
-                        }
-                    }
-                }.runTaskLaterAsynchronously(spaghetti, 2L);
-            } else {
-                spaghetti.getLogger().info("Catastrophic failure in unloading!");
-            }
         }
     }
 }

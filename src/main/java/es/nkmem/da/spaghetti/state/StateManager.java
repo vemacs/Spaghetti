@@ -44,6 +44,7 @@ public class StateManager {
             transition.setLoadEnvironment(World.Environment.NORMAL);
         }
 
+        WorldHandler worldHandler = spaghetti.getWorldHandler();
         boolean hasTeleported = false;
         if (transition.getResetPlayers()) {
             Bukkit.getOnlinePlayers().forEach(PlayerResetHandler::resetPlayer);
@@ -57,11 +58,11 @@ public class StateManager {
             } else {
                 teleportPlayers(transition);
                 hasTeleported = true;
-                WorldHandler.attemptWorldUnload(transition.getUnloadWorld());
+                worldHandler.attemptWorldUnload(transition.getUnloadWorld());
             }
         }
         if (transition.getLoadWorld() != null) {
-            WorldHandler.loadMap(transition.getLoadWorld(), transition.getLoadEnvironment());
+            worldHandler.loadMap(transition.getLoadWorld(), transition.getLoadEnvironment());
         }
         if (!hasTeleported) {
             teleportPlayers(transition);

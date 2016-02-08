@@ -5,6 +5,8 @@ import es.nkmem.da.spaghetti.state.NullGameState;
 import es.nkmem.da.spaghetti.state.StateManager;
 import es.nkmem.da.spaghetti.state.Transition;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,9 +18,7 @@ public class SpaghettiPlugin extends JavaPlugin {
     @Getter
     private StateManager stateManager;
     @Getter
-    private File mapsDirectory;
-    @Getter
-    private String gameWorldName;
+    private WorldHandler worldHandler;
 
     @Override
     public void onEnable() {
@@ -28,9 +28,10 @@ public class SpaghettiPlugin extends JavaPlugin {
         stateManager = new StateManager(this);
         getLogger().info("Initialized StateManager");
 
-        mapsDirectory = new File(getConfig().getString("maps-directory"));
-        gameWorldName = getConfig().getString("game-world-name");
-        WorldHandler.clearMapsDir();
+        worldHandler = new WorldHandler(this,
+                getConfig().getString("maps-directory"),
+                getConfig().getString("game-world-name"));
+        worldHandler.clearGameWorld();
         getLogger().info("Initialized World Handler and cleared maps directory");
     }
 
