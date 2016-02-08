@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class WorldHandler {
     public static String worldName;
 
@@ -28,11 +29,10 @@ public class WorldHandler {
                 }
 
                 String[] in = source.list();
-                String[] out = in;
                 int buffer = in.length;
 
                 for (length = 0; length < buffer; ++length) {
-                    String file = out[length];
+                    String file = in[length];
                     File srcFile = new File(source, file);
                     File destFile = new File(target, file);
 
@@ -53,11 +53,13 @@ public class WorldHandler {
         }
     }
 
+    @SuppressWarnings("all")
     private static void purgeDirectory(File dir) {
-        if (dir == null) return;
-        for (File file : dir.listFiles()) {
-            if (file.isDirectory()) purgeDirectory(file);
-            file.delete();
+        if (dir != null) {
+            for (File file : dir.listFiles()) {
+                if (file.isDirectory()) purgeDirectory(file);
+                file.delete();
+            }
         }
     }
 
