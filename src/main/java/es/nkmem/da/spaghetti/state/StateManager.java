@@ -36,9 +36,7 @@ public class StateManager {
         // handle transition
         // TODO: implement handlers
         if (transition.isResetPlayers()) {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                PlayerResetHandler.resetPlayer(p);
-            }
+            Bukkit.getOnlinePlayers().forEach(PlayerResetHandler::resetPlayer);
         }
         if (transition.getUnloadWorld() != null) {
             if (transition.getTeleportTo() == null
