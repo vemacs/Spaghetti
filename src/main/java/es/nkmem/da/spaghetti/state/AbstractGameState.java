@@ -1,6 +1,7 @@
 package es.nkmem.da.spaghetti.state;
 
 import es.nkmem.da.spaghetti.SpaghettiPlugin;
+import es.nkmem.da.spaghetti.handlers.WorldHandler;
 import es.nkmem.da.spaghetti.internal.DummyPlugin;
 import es.nkmem.da.spaghetti.registries.StateCommandRegistry;
 import es.nkmem.da.spaghetti.registries.StateListenerRegistry;
@@ -18,6 +19,8 @@ public abstract class AbstractGameState {
     private StateCommandRegistry commandRegistry;
     private StateListenerRegistry listenerRegistry;
     private StateScheduler scheduler;
+    private StateManager stateManager;
+    private WorldHandler worldHandler;
 
     protected AbstractGameState(@NonNull SpaghettiPlugin parent) {
         this.parent = parent;
@@ -25,6 +28,8 @@ public abstract class AbstractGameState {
         commandRegistry = new StateCommandRegistry(parent, dummy);
         listenerRegistry = new StateListenerRegistry(parent, dummy);
         scheduler = new StateScheduler(parent, dummy);
+        stateManager = parent.getStateManager();
+        worldHandler = parent.getWorldHandler();
     }
 
     public abstract void initialize(MemoryConfiguration data);
