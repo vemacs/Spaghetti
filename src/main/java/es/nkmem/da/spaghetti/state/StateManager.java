@@ -50,7 +50,7 @@ public class StateManager {
             }
         }
         if (transition.getLoadWorld() != null) {
-            WorldHandler.loadMap(transition.getLoadWorld());
+            WorldHandler.loadMap(transition.getLoadWorld(), transition.getLoadEnvironment());
         }
 
         // initialize new state
