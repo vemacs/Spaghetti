@@ -4,10 +4,18 @@ import es.nkmem.da.spaghetti.SpaghettiPlugin;
 import es.nkmem.da.spaghetti.data.WrappedLocation;
 import es.nkmem.da.spaghetti.handlers.PlayerResetHandler;
 import es.nkmem.da.spaghetti.handlers.WorldHandler;
+import es.nkmem.da.spaghetti.registries.StateListenerRegistry;
+import es.nkmem.da.spaghetti.registries.StateScheduler;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 public class StateManager {
     private SpaghettiPlugin spaghetti;
@@ -64,6 +72,18 @@ public class StateManager {
         if (state == null) {
             spaghetti.getLogger().warning("A null game state was passed. Was this expected behavior?");
             state = new NullGameState(spaghetti);
+        } else {
+            StateListenerRegistry listenerRegistry = state.getListenerRegistry();
+            if (transition.getTeleportTo() != null) {
+                listenerRegistry.registerListener(
+                        new TeleportListener(transition.getTeleportTo().getBukkitLocation().clone())
+                );
+            }
+            if (transition.getResetPlayers()) {
+                listenerRegistry.registerListener(
+                        new ResetListener()
+                );
+            }
         }
         currentState = state;
         state.initialize(data);
@@ -74,6 +94,24 @@ public class StateManager {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 p.teleport(transition.getTeleportTo().getBukkitLocation());
             }
+        }
+    }
+
+    @RequiredArgsConstructor
+    private class TeleportListener implements Listener {
+        @NonNull
+        private final Location teleportDest;
+
+        @EventHandler
+        public void onPlayerJoin(PlayerJoinEvent event) {
+            event.getPlayer().teleport(teleportDest);
+        }
+    }
+
+    private class ResetListener implements Listener {
+        @EventHandler
+        public void onPlayerJoin(PlayerJoinEvent event) {
+            PlayerResetHandler.resetPlayer(event.getPlayer());
         }
     }
 }
