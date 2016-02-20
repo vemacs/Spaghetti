@@ -18,8 +18,11 @@ public class PlayerResetHandler {
         p.setLevel(0);
         p.setExp(0.0F);
         p.setTotalExperience(0);
+        p.setWalkSpeed(0.2F);
+        p.setFlySpeed(0.1F);
         p.setGameMode(GameMode.SURVIVAL);
         p.setAllowFlight(false);
+        p.setFlying(false);
 
         for (PotionEffect effect : p.getActivePotionEffects()) {
             p.removePotionEffect(effect.getType());
