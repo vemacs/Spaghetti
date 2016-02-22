@@ -38,7 +38,7 @@ public class StateManager {
         currentState.cleanup();
 
         spaghetti.getLogger().info("Switching from " + currentState.getClass().getSimpleName() + " to " +
-                state.getClass().getSimpleName() + ", with" + transition.toString());
+                state.getClass().getSimpleName() + ", with " + transition.toString());
         currentState = null; // Release references
 
         // handle transition

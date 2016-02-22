@@ -28,7 +28,8 @@ public class SpaghettiPlugin extends JavaPlugin {
                 getConfig().getString("maps-directory"),
                 getConfig().getString("game-world-name"));
         worldHandler.clearGameWorld();
-        getLogger().info("Initialized World Handler and cleared maps directory");
+        getLogger().info("Initialized WorldHandler with directory " + worldHandler.getMapsDirectory().getName()
+            + ", and cleared game world");
     }
 
     @Override
