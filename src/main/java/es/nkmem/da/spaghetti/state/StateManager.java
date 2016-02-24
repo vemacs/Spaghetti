@@ -5,6 +5,7 @@ import es.nkmem.da.spaghetti.data.WrappedLocation;
 import es.nkmem.da.spaghetti.handlers.PlayerResetHandler;
 import es.nkmem.da.spaghetti.handlers.WorldHandler;
 import es.nkmem.da.spaghetti.registries.StateListenerRegistry;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
@@ -18,6 +19,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class StateManager {
     private SpaghettiPlugin spaghetti;
+    @Getter
     private AbstractGameState currentState;
 
     public StateManager(SpaghettiPlugin spaghetti) {
