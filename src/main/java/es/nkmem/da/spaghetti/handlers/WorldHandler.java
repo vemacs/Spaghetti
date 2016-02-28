@@ -19,6 +19,7 @@ public class WorldHandler {
     private File mapsDirectory;
     private File gameWorldFile;
     private String gameWorldName;
+    private String lastLoadedMap;
 
     private Plugin parent;
 
@@ -53,7 +54,9 @@ public class WorldHandler {
             WorldHandler.copyFile(new File(mapsDirectory, mapName), gameWorldFile);
             WorldCreator wc = new WorldCreator(gameWorldName);
             wc.environment(environment);
-            return Bukkit.createWorld(wc);
+            World w =  Bukkit.createWorld(wc);
+            lastLoadedMap = mapName;
+            return w;
         } catch (IOException e) {
             e.printStackTrace();
         }
