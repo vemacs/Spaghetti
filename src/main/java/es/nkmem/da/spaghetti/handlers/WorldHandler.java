@@ -1,12 +1,12 @@
 package es.nkmem.da.spaghetti.handlers;
 
-import es.nkmem.da.spaghetti.SpaghettiPlugin;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.*;
@@ -20,10 +20,10 @@ public class WorldHandler {
     private File gameWorldFile;
     private String gameWorldName;
 
-    private SpaghettiPlugin spaghetti;
+    private Plugin parent;
 
-    public WorldHandler(SpaghettiPlugin spaghetti, String mapsDirectory, String gameWorldName) {
-        this.spaghetti = spaghetti;
+    public WorldHandler(Plugin parent, String mapsDirectory, String gameWorldName) {
+        this.parent = parent;
         this.mapsDirectory = new File(mapsDirectory);
         this.gameWorldFile = new File(gameWorldName);
         this.gameWorldName = gameWorldName;
@@ -73,20 +73,20 @@ public class WorldHandler {
                     @Override
                     public void run() {
                         try {
-                            spaghetti.getLogger().info("Attempting world unload for " + world.getName());
+                            parent.getLogger().info("Attempting world unload for " + world.getName());
                             File worldFolder = world.getWorldFolder();
                             purgeDirectory(worldFolder);
                             worldFolder.delete();
                         } catch (Exception e) {
                             if (tries < 3) {
                                 tries++;
-                                this.runTaskLaterAsynchronously(spaghetti, (tries + 1) * 20L);
+                                this.runTaskLaterAsynchronously(parent, (tries + 1) * 20L);
                             }
                         }
                     }
-                }.runTaskLaterAsynchronously(spaghetti, 2L);
+                }.runTaskLaterAsynchronously(parent, 2L);
             } else {
-                spaghetti.getLogger().info("Catastrophic failure in unloading!");
+                parent.getLogger().info("Catastrophic failure in unloading!");
             }
         }
     }
