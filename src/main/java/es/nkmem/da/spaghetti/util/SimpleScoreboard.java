@@ -194,7 +194,7 @@ public class SimpleScoreboard {
         this.title = ChatColor.translateAlternateColorCodes('&', title);
 
         if(obj != null)
-            obj.setDisplayName(title);
+            obj.setDisplayName(this.title);
     }
 
     public void reset() {
