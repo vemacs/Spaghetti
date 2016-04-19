@@ -28,6 +28,7 @@ public class StateCommandRegistry {
 
     public void registerCommand(String name, CommandExecutor executor) {
         CommandMap commandMap = BukkitUtil.getCommandMap(parent.getServer());
+        getKnownCommands().put(name, null);
         commandMap.register(name, new StateCommand(name, dummy, executor));
     }
 
